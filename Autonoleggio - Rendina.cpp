@@ -10,43 +10,50 @@ struct auton{
     string marca;
     string modello;
     string colore;
+    string g[7];
     bool free;
 };
 
-void catalogo(auton autovett, auton *ptr_auto)
+void riempi_vet(auton autovett, auton vet[], auton *ptr_vet)
+{
+    ifstream fin(FILE_NAME, ios::in);
+    int i = 0;
+
+    while(!fin.eof()){
+        getline(fin, (ptr_vet+i)->categoria, ',');
+
+        //cout<<vet[i].categoria<<" ";
+
+        getline(fin, (ptr_vet+i)->marca, ',');
+       // cout<<vet[i].marca<<" ";
+
+        getline(fin, (ptr_vet+i)->modello, ',');
+       // cout<<vet[i].modello<<" ";
+
+        getline(fin, (ptr_vet+i)->colore, ',');
+       // cout<<vet[i].colore<<endl;
+
+        for(int k=0; k<7; k++){
+            getline(fin, (ptr_vet+i)->g[k], ',');
+        }
+    i++;
+
+    }
+}
+
+void stampa_catalogo(auton autovett, auton *ptr_auto, auton vet[])
 {
     int i = 0;
-    fstream fin(FILE_NAME);
+    fstream fin(FILE_NAME, ios::in);
+    cin.ignore();
+    string appoggio = "";
+
     while(!fin.eof())
     {
+        cout<<"VETTURA N."<<i+1<<": ";
+        getline(fin, appoggio);
+        cout<<appoggio<<endl<<endl;
 
-        string appoggio = "";
-        getline(fin,autovett.categoria,',');
-        cout<<autovett.categoria<<" ";
-
-        getline(fin,autovett.marca,',');
-        cout<<autovett.marca<<" ";
-
-        getline(fin,autovett.modello,',');
-        cout<<autovett.modello<<" ";
-
-        getline(fin,autovett.colore,',');
-        cout<<autovett.colore<<endl;
-
-        for(int k = 0; k < 7; k++)
-        {
-            getline(fin, appoggio, ',');
-            if(appoggio == " L" || appoggio == "L " || appoggio ){
-                autovett.free = true;
-                cout<<"Libera ";
-            }
-
-            else if(appoggio == " A"){
-                autovett.free = false;
-                cout<<"Occupata ";
-            }
-        }
-        cout<<endl;
         i++;
     }
     fin.close();
@@ -54,16 +61,18 @@ void catalogo(auton autovett, auton *ptr_auto)
 
 void menu()
 {
-    auton autovett, *ptr_auto = &autovett;
+    auton autovett, *ptr_auto = &autovett, vet[20], *ptr_vet = vet;
     int scelta;
 
-    cout<<"\t\tMENU'"<<endl;
+    riempi_vet(autovett, vet, ptr_vet);
+
+    cout<<"\n\t\tMENU'"<<endl;
     cout<<"1 - Consulta catalogo"<<endl
         <<"2 - Ricerca vettura"<<endl;
 
     cin>>scelta;
     switch(scelta){
-        case 1: catalogo(autovett, ptr_auto);
+        case 1: stampa_catalogo(autovett, ptr_auto, vet);
                 break;
     }
 }
