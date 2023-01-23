@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #define FILE_NAME "Auto.csv"
 
@@ -14,31 +15,22 @@ struct auton{
     bool free;
 };
 
-void riempi_vet(auton autovett, auton vet[], auton *ptr_vet)
+void riempi_vet(auton autovett, auton vet[])
 {
-    ifstream fin(FILE_NAME, ios::in);
-    int i = 0;
+    ifstream fin(FILE_NAME,ios::in);
 
-    while(!fin.eof()){
-        getline(fin, (ptr_vet+i)->categoria, ',');
-
-        //cout<<vet[i].categoria<<" ";
-
-        getline(fin, (ptr_vet+i)->marca, ',');
-       // cout<<vet[i].marca<<" ";
-
-        getline(fin, (ptr_vet+i)->modello, ',');
-       // cout<<vet[i].modello<<" ";
-
-        getline(fin, (ptr_vet+i)->colore, ',');
-       // cout<<vet[i].colore<<endl;
-
-        for(int k=0; k<7; k++){
-            getline(fin, (ptr_vet+i)->g[k], ',');
+    string app;
+    while(!fin.eof())
+    {
+        getline(fin,app);
+        for(int i=0; i<7; i++)
+        {
+            fin>>vet[i].categoria>>vet[i].marca>>vet[i].modello>>vet[i].colore;
+            for(int k=0; k<7; k++)
+                fin>>vet[i].g[k];
         }
-    i++;
-
     }
+    fin.close();
 }
 
 void stampa_catalogo(auton autovett, auton *ptr_auto, auton vet[])
@@ -48,9 +40,12 @@ void stampa_catalogo(auton autovett, auton *ptr_auto, auton vet[])
     cin.ignore();
     string appoggio = "";
 
+    system("cls");
+    cout<<"\t\t\t\t\t CATALOGO\n"<<endl;
+
     while(!fin.eof())
     {
-        cout<<"VETTURA N."<<i+1<<": ";
+        cout<<"\tVETTURA N."<<i+1<<": ";
         getline(fin, appoggio);
         cout<<appoggio<<endl<<endl;
 
@@ -59,13 +54,58 @@ void stampa_catalogo(auton autovett, auton *ptr_auto, auton vet[])
     fin.close();
 }
 
+void findA(auton vet[], string sett, string g, int cont)
+{
+    for(int i=0; i<7; i++){
+        if(g == sett){
+            if(vet[i].g[cont] == "L"){
+                cout<<endl<<vet[i].marca<<" "<<vet[i].modello<<" "<<vet[i].colore<<" ";
+            }
+        }
+    }
+}
+
+void cerca_vettura(auton autovett, auton vet[])
+{
+
+  //  ifstream fin(FILE_NAME, ios::in);
+    string cate;
+
+    cout<<"Inserire categoria dell'auto: ";
+    cin>>cate;
+    if(cate!="utilitaria" && cate!="lusso" && cate!="sportiva" && cate!="furgone")
+        cout<<"Categoria non esistente\n";
+    else{
+        string g, sett_vet[]{"Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"};
+        cout<<"Inserire giorno da prenotare: ";
+        cin>>g;
+
+        if(cate == "utilitaria"){
+            for(int k=0; k<7; k++)
+                findA(vet, sett_vet[k], g, k);
+        }
+        if(cate == "lusso"){
+            for(int k=0; k<7; k++)
+                findA(vet, sett_vet[k], g, k);
+        }
+        if(cate == "sportiva"){
+            for(int k=0; k<7; k++)
+                findA(vet, sett_vet[k], g, k);
+        }
+        if(cate == "furgone"){
+            for(int k=0; k<7; k++)
+                findA(vet, sett_vet[k], g, k);
+        }
+    }
+
+}
+
 void menu()
 {
     auton autovett, *ptr_auto = &autovett, vet[20], *ptr_vet = vet;
     int scelta;
 
-    riempi_vet(autovett, vet, ptr_vet);
-
+    riempi_vet(autovett, vet);
     cout<<"\n\t\tMENU'"<<endl;
     cout<<"1 - Consulta catalogo"<<endl
         <<"2 - Ricerca vettura"<<endl;
@@ -74,6 +114,7 @@ void menu()
     switch(scelta){
         case 1: stampa_catalogo(autovett, ptr_auto, vet);
                 break;
+        case 2: cerca_vettura(autovett, vet);
     }
 }
 
