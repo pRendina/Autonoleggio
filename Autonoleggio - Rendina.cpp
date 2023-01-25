@@ -16,7 +16,7 @@ struct auton{
 
 int sizee()
 {
-    ifstream fin(FILE_NAME, ios::app);
+    ifstream fin(FILE_NAME);
     string app;
     int i = 0;
     while(getline(fin, app))
@@ -50,22 +50,19 @@ void riempi_vet(auton vet[])
 
 void stampa_catalogo(auton vet[])
 {
-    int i = 0;
-    fstream fin(FILE_NAME, ios::in);
-    string appoggio = "";
+    for(int i=0; i<sizee(); i++){
+            cout<<i+1<<") ";
+            cout<<vet[i].categoria<<" "<<vet[i].marca<<" "<<vet[i].modello<<" "<<vet[i].colore;
+            cout<<"\n\tDisponibilita':\n"<<
+            "\t\t1] Lunedi': "<<vet[i].lun<<
+            "\n\t\t2] Martedi': "<<vet[i].mar<<
+            "\n\t\t3] Mercoledi': "<<vet[i].mer<<
+            "\n\t\t4] Giovedi': "<<vet[i].gio<<
+            "\n\t\t5] Venerdi': "<<vet[i].ven<<
+            "\n\t\t6] Sabato: "<<vet[i].sab<<
+            "\n\t\t7] Domenica: "<<vet[i].dom<<endl<<endl;
 
-    system("cls");
-    cout<<"\t\t\t\t\t CATALOGO\n"<<endl;
-
-    while(!fin.eof())
-    {
-        cout<<"\tVETTURA N."<<i+1<<": ";
-        getline(fin, appoggio);
-        cout<<appoggio<<endl<<endl;
-
-        i++;
     }
-    fin.close();
 }
 
 void scrivi_file(auton vet[], int grand)
@@ -115,10 +112,72 @@ void cambia_vet(auton vet[], int g, int pos)
     scrivi_file(vet, grandezza);
 }
 
+bool ok(auton vet[], int pos, string g[])
+{
+    int controllo = 0;
+    bool istrue[7];
+
+    for(int i=0; i<7; i++){
+        switch(i){
+            case 0: if(g[i] != vet[pos].lun)
+                        istrue[i] = true;
+                    else
+                        istrue[i] = false;
+                    break;
+
+            case 1: if(g[i] != vet[pos].mar)
+                        istrue[i] = true;
+                    else
+                        istrue[i] = false;
+                    break;
+
+            case 2: if(g[i] != vet[pos].mer)
+                        istrue[i] = true;
+                    else
+                        istrue[i] = false;
+                    break;
+
+            case 3: if(g[i] != vet[pos].gio)
+                        istrue[i] = true;
+                    else
+                        istrue[i] = false;
+                    break;
+
+            case 4: if(g[i] != vet[pos].ven)
+                        istrue[i] = true;
+                    else
+                        istrue[i] = false;
+                    break;
+
+            case 5: if(g[i] != vet[pos].sab)
+                        istrue[i] = true;
+                    else
+                        istrue[i] = false;
+                    break;
+
+            case 6: if(g[i] != vet[pos].dom)
+                        istrue[i] = true;
+                    else
+                        istrue[i] = false;
+        }
+    }
+
+    for(int i=0; i<7; i++){
+        if(istrue[i] == false)
+            controllo++;
+    }
+
+    if(controllo != 0)
+        return false;
+    else
+        return true;
+
+}
+
 void findA(auton vet[], string cate, string g[])
 {
     for(int i=0; i<sizee(); i++){
-        if(vet[i].categoria == cate){
+        if(vet[i].categoria == cate && ok(vet,i,g) == true){
             cout<<i+1<<") ";
             cout<<vet[i].marca<<" "<<vet[i].modello<<" "<<vet[i].colore;
             cout<<"\n\tDisponibilita':\n"<<
