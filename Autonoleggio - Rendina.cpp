@@ -12,7 +12,6 @@ struct auton{
     string modello;
     string colore;
     string lun,mar,mer,gio,ven,sab,dom;
-    bool free;
 };
 
 int sizee()
@@ -26,9 +25,9 @@ int sizee()
     return i;
 }
 
-void riempi_vet(auton autovett, auton vet[])
+void riempi_vet(auton vet[])
 {
-    ifstream fin(FILE_NAME,ios::in);
+    fstream fin(FILE_NAME, ios::in);
     int i = 0;
     while(!fin.eof())
     {
@@ -49,11 +48,10 @@ void riempi_vet(auton autovett, auton vet[])
     fin.close();
 }
 
-void stampa_catalogo(auton autovett, auton *ptr_auto, auton vet[])
+void stampa_catalogo(auton vet[])
 {
     int i = 0;
     fstream fin(FILE_NAME, ios::in);
-    cin.ignore();
     string appoggio = "";
 
     system("cls");
@@ -70,26 +68,67 @@ void stampa_catalogo(auton autovett, auton *ptr_auto, auton vet[])
     fin.close();
 }
 
-void cambia_file(auton vet[])
+void scrivi_file(auton vet[], int grand)
 {
+    fstream out(FILE_NAME, ios::out);
 
+    for(int i=0; i<grand; i++){
+        out<<vet[i].categoria
+        <<","<<vet[i].marca
+        <<","<<vet[i].modello
+        <<","<<vet[i].colore
+        <<","<<vet[i].lun
+        <<","<<vet[i].mar
+        <<","<<vet[i].mer
+        <<","<<vet[i].gio
+        <<","<<vet[i].ven
+        <<","<<vet[i].sab<<",";
+        if(i==grand-1)
+            out<<vet[i].dom;
+        else
+            out<<vet[i].dom<<endl;
+    }
+
+    out.close();
 }
 
-void findA(auton vet[], string cate)
+void cambia_vet(auton vet[], int g, int pos)
 {
-    string sett_vet[]{"Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"};
+    int grandezza = sizee();
+    switch(g){
+        case 1: vet[pos].lun = "A";
+                break;
+        case 2: vet[pos].mar = "A";
+                break;
+        case 3: vet[pos].mer = "A";
+                break;
+        case 4: vet[pos].gio = "A";
+                break;
+        case 5: vet[pos].ven = "A";
+                break;
+        case 6: vet[pos].sab = "A";
+                break;
+        case 7: vet[pos].dom = "A";
+                break;
+    }
+
+    scrivi_file(vet, grandezza);
+}
+
+void findA(auton vet[], string cate, string g[])
+{
     for(int i=0; i<sizee(); i++){
         if(vet[i].categoria == cate){
             cout<<i+1<<") ";
             cout<<vet[i].marca<<" "<<vet[i].modello<<" "<<vet[i].colore;
             cout<<"\n\tDisponibilita':\n"<<
-            "\t\tLunedi': "<<vet[i].lun<<
-            "\n\t\tMartedi': "<<vet[i].mar<<
-            "\n\t\tMercoledi': "<<vet[i].mer<<
-            "\n\t\tGiovedi': "<<vet[i].gio<<
-            "\n\t\tVenerdi': "<<vet[i].ven<<
-            "\n\t\tSabato: "<<vet[i].sab<<
-            "\n\t\tDomenica: "<<vet[i].dom<<endl<<endl;
+            "\t\t1] Lunedi': "<<vet[i].lun<<
+            "\n\t\t2] Martedi': "<<vet[i].mar<<
+            "\n\t\t3] Mercoledi': "<<vet[i].mer<<
+            "\n\t\t4] Giovedi': "<<vet[i].gio<<
+            "\n\t\t5] Venerdi': "<<vet[i].ven<<
+            "\n\t\t6] Sabato: "<<vet[i].sab<<
+            "\n\t\t7] Domenica: "<<vet[i].dom<<endl<<endl;
         }
     }
 
@@ -97,103 +136,116 @@ void findA(auton vet[], string cate)
     cout<<"Inserire macchina da selezionare: ";
     cin>>select;
 
-    string g[7];
-    do{
-        cout<<"\nInserire giorni da prenotare (inserire ESCI per uscire): ";
-        cin>>g[cont];
-        cont++;
-    }while(g[cont-1] != "ESCI");
-
     for(int i=0; i<7; i++){
-        if(g[i]=="") break;
+        if(g[i] == "A"){
+            switch(i){
+                case 0: if(vet[select-1].lun == "A")
+                        cout<<"\n\tMacchina occupata lunedi'\n";
+                        else cambia_vet(vet, i+1, select-1);
+                        break;
 
-        if(g[i] == sett_vet[i]){
-            if(vet[select-1].lun == "A")
-                cout<<"Macchina occupata quel giorno\n";
-            else cambia_file(vet);
+                case 1: if(vet[select-1].mar == "A")
+                        cout<<"\n\tMacchina occupata martedi'\n";
+                        else cambia_vet(vet, i+1, select-1);
+                        break;
+
+                case 2: if(vet[select-1].mer == "A")
+                        cout<<"\n\tMacchina occupata mercoledi'\n";
+                        else cambia_vet(vet, i+1, select-1);
+                        break;
+
+                case 3: if(vet[select-1].gio == "A")
+                        cout<<"\n\tMacchina occupata giovedi'\n";
+                        else cambia_vet(vet, i+1, select-1);
+                        break;
+
+                case 4: if(vet[select-1].ven == "A")
+                        cout<<"\n\tMacchina occupata venerdi'\n";
+                        else cambia_vet(vet, i+1, select-1);
+                        break;
+
+                case 5: if(vet[select-1].sab == "A")
+                        cout<<"\n\tMacchina occupata sabato\n";
+                        else cambia_vet(vet, i+1, select-1);
+                        break;
+
+                case 6: if(vet[select-1].dom == "A")
+                        cout<<"\n\tMacchina occupata domenica\n";
+                        else cambia_vet(vet, i+1, select-1);
+            }
         }
-
-        if(g[i] == sett_vet[i]){
-            if(vet[select-1].mar == "A")
-                cout<<"Macchina occupata quel giorno\n";
-            else cambia_file(vet);
-        }
-
-        if(g[i] == sett_vet[i]){
-            if(vet[select-1].mer == "A")
-                cout<<"Macchina occupata quel giorno\n";
-            else cambia_file(vet);
-        }
-
-        if(g[i] == sett_vet[i]){
-            if(vet[select-1].gio == "A")
-                cout<<"Macchina occupata quel giorno\n";
-            else cambia_file(vet);
-        }
-
-        if(g[i] == sett_vet[i]){
-            if(vet[select-1].ven == "A")
-                cout<<"Macchina occupata quel giorno\n";
-            else cambia_file(vet);
-        }
-
-        if(g[i] == sett_vet[i]){
-            if(vet[select-1].sab == "A")
-                cout<<"Macchina occupata quel giorno\n";
-            else cambia_file(vet);
-        }
-
-        if(g[i] == sett_vet[i]){
-            if(vet[select-1].dom == "A")
-                cout<<"Macchina occupata quel giorno\n";
-            else cambia_file(vet);
-        }
-
     }
-
 }
 
-void cerca_vettura(auton autovett, auton vet[])
+void cerca_vettura(auton vet[])
 {
-    string cate;
+    string cate="", all;
+    int i=0, k=0;
+    string g[7];
 
-    cout<<"Inserire categoria dell'auto: ";
-    cin>>cate;
+    cout<<"Inserire categoria dell'auto e giorni da affittare: ";
+    cin.ignore();
+    getline(cin, all);
+
+    for(i=0; all.at(i) != ' '; i++)
+        cate +=  all.at(i);
+    i++;
+    for(i; i<all.length(); i++){
+        switch (all.at(i))
+        {
+            case '1': g[0] = "A";
+                      break;
+            case '2': g[1] = "A";
+                      break;
+            case '3': g[2] = "A";
+                      break;
+            case '4': g[3] = "A";
+                      break;
+            case '5': g[4] = "A";
+                      break;
+            case '6': g[5] = "A";
+                      break;
+            case '7': g[6] = "A";
+
+        }
+        k++;
+    }
+
     if(cate!="utilitaria" && cate!="lusso" && cate!="sportiva" && cate!="furgone")
         cout<<"Categoria non esistente\n";
     else{
         if(cate == "utilitaria"){
-            findA(vet, cate);
+            findA(vet, cate, g);
         }
         if(cate == "lusso"){
-            findA(vet, cate);
+            findA(vet, cate, g);
         }
         if(cate == "sportiva"){
-            findA(vet, cate);
+            findA(vet, cate, g);
         }
         if(cate == "furgone"){
-            findA(vet, cate);
+            findA(vet, cate, g);
         }
     }
 }
 
 void menu()
 {
-    auton autovett, *ptr_auto = &autovett, vet[20], *ptr_vet = vet;
+    auton vet[20];
     int scelta;
 
-    riempi_vet(autovett, vet);
+    riempi_vet(vet);
     while(scelta!=3){
         cout<<"\n\t\tMENU'"<<endl;
         cout<<"1 - Consulta catalogo"<<endl
             <<"2 - Ricerca vettura"<<endl
-            <<"3 - Uscita"<<endl;
-
+            <<"3 - Uscita\n>>";
         cin>>scelta;
+
         switch(scelta){
-            case 1: stampa_catalogo(autovett, ptr_auto, vet);
+            case 1: stampa_catalogo(vet);
                     break;
-            case 2: cerca_vettura(autovett, vet);
+            case 2: cerca_vettura(vet);
                     break;
             case 3: cout<<"USCITA...";
                     break;
